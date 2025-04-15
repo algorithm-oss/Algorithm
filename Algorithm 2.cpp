@@ -386,9 +386,15 @@ static void Integer_Program(int instance)
 		finish_time_CPLEX = clock();
 		run_time_CPLEX = double(finish_time_CPLEX - begin_time) / CLOCKS_PER_SEC;
 		//the objective value of this model
-		obj_value_offline = IP_Solver.getObjValue();
-
-
+		if(IP_Solver.getStatus() == IloAlgorithm::Optimal)
+		{
+			obj_value_offline = IP_Solver.getObjValue();
+		}
+	        else if(IP_Solver.getStatus() == IloAlgorithm::Feasible)
+		{
+			obj_value_offline = IP_Solver.getBestObjValue();
+		}
+		
 		obj_setup.end(); obj_prod.end(); obj_wait.end(); obj_inven.end(); obj_trans.end();
 		obj.end();
 		//free memory
