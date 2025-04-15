@@ -370,9 +370,14 @@ static void Integer_Program(int instance)
 		finish_time_CPLEX = clock();
 		run_time_CPLEX = double(finish_time_CPLEX - begin_time) / CLOCKS_PER_SEC;
 		//the objective value of this model
-		obj_value_offline = IP_Solver.getObjValue();
- 
-
+		if(IP_Solver.getStatus() == IloAlgorithm::Optimal)
+		{
+			obj_value_offline = IP_Solver.getObjValue();
+		}
+	        else if(IP_Solver.getStatus() == IloAlgorithm::Feasible)
+		{
+			obj_value_offline = IP_Solver.getBestObjValue();
+		}
 		obj_setup.end(); obj_inven.end(); obj_trans.end();
 		obj.end();
 		//free memory
@@ -405,7 +410,7 @@ static void Primal_Dual(int instance)
 	begin_time2 = clock();
 
 	vector<vector<int>> PT_time(T + 1, vector<int>(6, 99999));//production and transportation time
-	vector<vector<vector<double>>> a(T + 1, vector<vector<double>>(6, vector<double>(T + 1, 0)));//>=¶¡_is^k
+	vector<vector<vector<double>>> a(T + 1, vector<vector<double>>(6, vector<double>(T + 1, 0)));//>=¬¶√Å_is^k
 	vector<vector<int>> U(T + 1, vector<int>(6, 0)); //replace U_t
 	
 	for (int t = 1; t <= T; t++)
